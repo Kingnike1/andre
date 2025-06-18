@@ -1,17 +1,21 @@
 <?php
-// Conexão simples
 require_once 'conexao.php';
 
-// Consulta para entrevistador
+// Consulta única para pegar todas as pessoas
 $sql = "SELECT id_pessoa, nome FROM tb_pessoa";
-$resultado1 = mysqli_query($conexao, $sql);
+$resultado = mysqli_query($conexao, $sql);
 
+// Armazenar todas as pessoas num array
+$pessoas = [];
+while ($linha = mysqli_fetch_assoc($resultado)) {
+  $pessoas[] = $linha;
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Cadastrar Entrevista</title>
 </head>
 <body>
@@ -19,7 +23,7 @@ $resultado1 = mysqli_query($conexao, $sql);
 
   <form action="salvar_entrevista.php" method="post">
     <label for="titulo">Título:</label><br>
-    <input type="text" name="titulo" id="titulo" required><br>
+    <input type="text" name="titulo" id="titulo" required /><br>
 
     <label for="resumo">Resumo:</label><br>
     <textarea name="resumo" id="resumo" required></textarea><br>
@@ -27,20 +31,20 @@ $resultado1 = mysqli_query($conexao, $sql);
     <label for="entrevistador">Entrevistador:</label><br>
     <select name="entrevistador" id="entrevistador" required>
       <option value="" disabled selected>Selecione</option>
-      <?php while ($p = mysqli_fetch_assoc($resultado1)): ?>
-        <option value="<?= $p['id_pessoa'] ?>"><?= htmlspecialchars($p['nome']) ?></option>
-      <?php endwhile; ?>
-    </select><br>
+      <?php foreach ($pessoas as $p): ?>
+        <option value="<? echo $p['id_pessoa'] ?>"><? echo ($p['nome']) ?></option>
+      <?php endforeach; ?>
+    </select><br><br>
 
     <label for="entrevistado">Entrevistado:</label><br>
     <select name="entrevistado" id="entrevistado" required>
       <option value="" disabled selected>Selecione</option>
-      <?php while ($p = mysqli_fetch_assoc($resultado1)): ?>
-        <option value="<?= $p['id_pessoa'] ?>"><?= htmlspecialchars($p['nome']) ?></option>
-      <?php endwhile; ?>
+      <?php foreach ($pessoas as $p): ?>
+        <option value="<? echo $p['id_pessoa'] ?>"><? echo ($p['nome']) ?></option>
+      <?php endforeach; ?>
     </select><br><br>
 
-    <input type="submit" value="Salvar Entrevista">
+    <input type="submit" value="Salvar Entrevista" />
   </form>
 </body>
 </html>
